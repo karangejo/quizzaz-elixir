@@ -14,8 +14,48 @@
   <li>
     <strong>Name:</strong>
     <%= @game.name %>
+    <ul>
+      <%= for question <- @game.questions do %>
+      <li>
+        <strong>Question:</strong>
+        <%= question.prompt %>
+      </li>
+      <li>
+        <strong>Correct Answer:</strong>
+        <%= question.correct_answer %>
+        <ul>
+          <li>
+            <strong>1) </strong>
+            <%= question.answer_1%>
+          </li>
+          <li>
+            <strong>2) </strong>
+            <%= question.answer_2%>
+          </li>
+          <li>
+            <strong>3) </strong>
+            <%= question.answer_3%>
+          </li>
+          <li>
+            <strong>4) </strong>
+            <%= question.answer_4%>
+          </li>
+        </ul>
+      </li>
+      <% end %>
+    </ul>
   </li>
 
+  <li>
+  <button phx-click="show-question-form">New Question</button>
+  <%= if @show_question_form do %>
+    <%= live_modal @socket, QuizzazWeb.QuestionLive.FormComponent,
+      id: :new,
+      title: "New Question For Game",
+      question: @question,
+      return_to: Routes.game_index_path(@socket, :index) %>
+      <% end %>
+  </li>
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.game_show_path(@socket, :edit, @game), class: "button" %></span>

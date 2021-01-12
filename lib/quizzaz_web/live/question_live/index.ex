@@ -5,7 +5,9 @@ defmodule QuizzazWeb.QuestionLive.Index do
   alias Quizzaz.Games.Question
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
+    game = Games.get_game!(params["game"])
+    socket = assign(socket, :game, game)
     {:ok, assign(socket, :questions, list_questions())}
   end
 
@@ -22,8 +24,9 @@ defmodule QuizzazWeb.QuestionLive.Index do
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Question")
+    |> assign(:page_title, "New Question For Game")
     |> assign(:question, %Question{})
+    |> assign(:game, socket.assigns.game)
   end
 
   defp apply_action(socket, :index, _params) do

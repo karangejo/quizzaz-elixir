@@ -42,11 +42,11 @@ defmodule QuizzazWeb.GameLive.FormComponent do
 
   defp save_game(socket, :new, game_params) do
     case Games.create_game(game_params) do
-      {:ok, _game} ->
+      {:ok, game} ->
         {:noreply,
          socket
          |> put_flash(:info, "Game created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_redirect(to: Routes.game_show_path(socket, :show, game))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

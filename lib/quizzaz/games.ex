@@ -35,7 +35,7 @@ defmodule Quizzaz.Games do
       ** (Ecto.NoResultsError)
 
   """
-  def get_game!(id), do: Repo.get!(Game, id)
+  def get_game!(id), do: Repo.get!(Game, id) |> Repo.preload(:questions)
 
   @doc """
   Creates a game.
@@ -145,9 +145,10 @@ defmodule Quizzaz.Games do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_question(attrs \\ %{}) do
+  def create_question(%Game{} = game, attrs \\ %{}) do
     %Question{}
     |> Question.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:game, game)
     |> Repo.insert()
   end
 
@@ -163,9 +164,10 @@ defmodule Quizzaz.Games do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_question(%Question{} = question, attrs) do
+  def update_question(%Game{} = game, %Question{} = question, attrs) do
     question
     |> Question.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:game, game)
     |> Repo.update()
   end
 
