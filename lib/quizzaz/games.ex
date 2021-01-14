@@ -7,6 +7,7 @@ defmodule Quizzaz.Games do
   alias Quizzaz.Repo
 
   alias Quizzaz.Games.Game
+  alias Quizzaz.Games.Question
 
   @doc """
   Returns the list of games.
@@ -35,7 +36,12 @@ defmodule Quizzaz.Games do
       ** (Ecto.NoResultsError)
 
   """
-  def get_game!(id), do: Repo.get!(Game, id) |> Repo.preload(:questions)
+  def get_game!(id) do
+    questions_query = from q in Question, order_by: :id
+
+    Repo.get!(Game, id)
+    |> Repo.preload([questions: questions_query])
+  end
 
   @doc """
   Creates a game.

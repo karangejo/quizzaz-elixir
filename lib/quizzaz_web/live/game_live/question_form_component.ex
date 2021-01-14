@@ -25,7 +25,6 @@ defmodule QuizzazWeb.QuestionLive.QuestionFormComponent do
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
-    IO.inspect(socket.assigns)
     save_question(socket, socket.assigns.action, question_params)
   end
 

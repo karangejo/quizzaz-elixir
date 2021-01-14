@@ -17,6 +17,15 @@
             <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
               <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
             <% end %>
+            <li>
+               <span><%= live_patch "New Game", to: Routes.game_index_path(@conn, :new)  %></span>
+            </li>
+            <li>
+              <span><%= live_patch "Browse Games", to: Routes.game_index_path(@conn, :index) %></span>
+            </li>
+            <li>
+              <span><%= live_patch "Home", to: Routes.page_path(@conn, :index) %></span>
+            </li>
           </ul>
         </nav>
       </section>
