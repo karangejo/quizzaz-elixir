@@ -1,10 +1,11 @@
-defmodule QuizzazWeb.QuestionLive.FormComponent do
+defmodule QuizzazWeb.QuestionLive.QuestionFormComponent do
   use QuizzazWeb, :live_component
 
   alias Quizzaz.Games
 
   @impl true
   def update(%{question: question} = assigns, socket) do
+    IO.inspect(socket.assigns)
     changeset = Games.change_question(question)
 
     {:ok,
@@ -24,6 +25,7 @@ defmodule QuizzazWeb.QuestionLive.FormComponent do
   end
 
   def handle_event("save", %{"question" => question_params}, socket) do
+    IO.inspect(socket.assigns)
     save_question(socket, socket.assigns.action, question_params)
   end
 
@@ -41,7 +43,7 @@ defmodule QuizzazWeb.QuestionLive.FormComponent do
   end
 
   defp save_question(socket, :new, question_params) do
-    case Games.create_question(question_params) do
+    case Games.create_question(socket.assigns.game,question_params) do
       {:ok, _question} ->
         {:noreply,
          socket

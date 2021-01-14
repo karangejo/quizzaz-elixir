@@ -164,10 +164,9 @@ defmodule Quizzaz.Games do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_question(%Game{} = game, %Question{} = question, attrs) do
+  def update_question(%Question{} = question, attrs) do
     question
     |> Question.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:game, game)
     |> Repo.update()
   end
 

@@ -19,6 +19,19 @@
       <li>
         <strong>Question:</strong>
         <%= question.prompt %>
+        <span><%= link "Delete", to: "#", phx_click: "delete-question", phx_value_id: question.id, phx_value_game_id: @game.id, data: [confirm: "Are you sure?"] %></span>
+        <span><%= link "Edit", to: "#", phx_click: "show-edit-question-form", phx_value_id: question.id %></span>
+        <%= if @question_to_edit == question.id do %>
+          <%= live_modal @socket, QuizzazWeb.QuestionLive.QuestionFormComponent,
+                modal_id: :edit_modal,
+                id: question.id,
+                action: :edit,
+                question: question,
+                title: "Edit Question For Game",
+                game: @game,
+                return_to: Routes.game_show_path(@socket, :show, @game)
+          %>
+      <% end %>
       </li>
       <li>
         <strong>Correct Answer:</strong>
@@ -47,14 +60,18 @@
   </li>
 
   <li>
-  <button phx-click="show-question-form">New Question</button>
-  <%= if @show_question_form do %>
-    <%= live_modal @socket, QuizzazWeb.QuestionLive.FormComponent,
+  <button phx-click="show-new-question-form">New Question</button>
+  <%= if @show_new_question_form do %>
+    <%= live_modal @socket, QuizzazWeb.QuestionLive.QuestionFormComponent,
+      modal_id: :new_modal,
       id: :new,
+      action: :new,
       title: "New Question For Game",
       question: @question,
-      return_to: Routes.game_index_path(@socket, :index) %>
-      <% end %>
+      game: @game,
+      return_to: Routes.game_show_path(@socket, :show, @game)
+      %>
+  <% end %>
   </li>
 </ul>
 
