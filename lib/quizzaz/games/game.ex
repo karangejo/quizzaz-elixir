@@ -5,6 +5,7 @@ defmodule Quizzaz.Games.Game do
   schema "games" do
     field :name, :string
     has_many :questions, Quizzaz.Games.Question
+    belongs_to :user, Quizzaz.Accounts.User
 
     timestamps()
   end

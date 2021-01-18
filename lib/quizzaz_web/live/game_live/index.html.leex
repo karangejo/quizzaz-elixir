@@ -1,6 +1,8 @@
-<h1>Browse Games</h1>
+<h1><%= @page_title %></h1>
 <span><%= live_redirect "Back", to: Routes.page_path(@socket, :index), class: "button" %></span>
-<span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new), class: "button"  %></span>
+<%= if @live_action == :mygames do %>
+  <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new), class: "button"  %></span>
+<% end %>
 
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal @socket, QuizzazWeb.GameLive.FormComponent,
@@ -8,7 +10,8 @@
     title: @page_title,
     action: @live_action,
     game: @game,
-    return_to: Routes.game_index_path(@socket, :index) %>
+    current_user: @current_user,
+    return_to: Routes.game_index_path(@socket, :mygames) %>
 <% end %>
 
 <table>
@@ -25,9 +28,11 @@
         <td>
           <span><%= live_redirect game.name, to: Routes.game_show_path(@socket, :show, game) %></span>
         </td>
-        <td>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: game.id, data: [confirm: "Are you sure?"], class: "button"  %></span>
-        </td>
+        <%= if @live_action == :mygames do %>
+         <td>
+           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: game.id, data: [confirm: "Are you sure?"], class: "button"  %></span>
+         </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

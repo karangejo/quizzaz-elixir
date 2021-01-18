@@ -5,7 +5,6 @@ defmodule QuizzazWeb.QuestionLive.QuestionFormComponent do
 
   @impl true
   def update(%{question: question} = assigns, socket) do
-    IO.inspect(socket.assigns)
     changeset = Games.change_question(question)
 
     {:ok,

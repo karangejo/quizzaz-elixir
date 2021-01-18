@@ -3,10 +3,17 @@ defmodule QuizzazWeb.GameLive.Index do
 
   alias Quizzaz.Games
   alias Quizzaz.Games.Game
+  alias Quizzaz.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, :games, list_games())}
+  def mount(_params, session, socket) do
+    case Map.fetch(session, "user_token") do
+      {:ok, token} ->
+        user = Accounts.get_user_by_session_token(token)
+        {:ok, assign(socket, games: list_user_games(user), current_user: user)}
+      :error ->
+        {:ok, assign(socket, :games, list_games())}
+    end
   end
 
   @impl true
@@ -28,7 +35,15 @@ defmodule QuizzazWeb.GameLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Games")
+    |> assign(:page_title, "Browse Games")
+    |> assign(:game, nil)
+    |> assign(:games, list_games())
+  end
+
+  defp apply_action(socket, :mygames, _params) do
+    socket
+    |> assign(:page_title, "My Games")
+    |> assign(:games, list_user_games(socket.assigns.current_user))
     |> assign(:game, nil)
   end
 
@@ -42,5 +57,9 @@ defmodule QuizzazWeb.GameLive.Index do
 
   defp list_games do
     Games.list_games()
+  end
+
+  defp list_user_games(user) do
+    Games.list_games(user)
   end
 end

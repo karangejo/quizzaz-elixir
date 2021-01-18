@@ -3,15 +3,22 @@ defmodule QuizzazWeb.GameLive.Show do
 
   alias Quizzaz.Games
   alias Quizzaz.Games.Question
+  alias Quizzaz.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     socket =
       socket
       |> assign(show_new_question_form: false)
       |> assign(question_to_edit: 0)
 
-    {:ok, socket}
+    case Map.fetch(session, "user_token") do
+      {:ok, token} ->
+        user = Accounts.get_user_by_session_token(token)
+        {:ok, assign(socket, current_user: user)}
+      :error ->
+        {:ok, socket}
+    end
   end
 
   @impl true

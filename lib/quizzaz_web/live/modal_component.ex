@@ -4,7 +4,7 @@ defmodule QuizzazWeb.ModalComponent do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="phx-modal"
+    <div id="<%= @id %>" class="phx-modal"
       phx-capture-click="close"
       phx-window-keydown="close"
       phx-key="escape"

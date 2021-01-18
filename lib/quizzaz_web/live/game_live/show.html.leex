@@ -1,6 +1,10 @@
 <h1><%= @game.name %></h1>
-<span><%= live_patch "Edit Game", to: Routes.game_show_path(@socket, :edit, @game), class: "button" %></span>
-<span><%= live_redirect "Back", to: Routes.game_index_path(@socket, :index), class: "button" %></span>
+<%= if @current_user.id == @game.user_id do %>
+  <span><%= live_patch "Edit Game", to: Routes.game_show_path(@socket, :edit, @game), class: "button" %></span>
+  <span><%= live_redirect "Back", to: Routes.game_index_path(@socket, :mygames), class: "button" %></span>
+<% else %>
+  <span><%= live_redirect "Back", to: Routes.game_index_path(@socket, :index), class: "button" %></span>
+<% end %>
 
 <%= if @live_action in [:edit] do %>
   <%= live_modal @socket, QuizzazWeb.GameLive.FormComponent,
@@ -17,7 +21,9 @@
       <li>
         <strong>Question:</strong>
         <%= question.prompt %>
-        <span><%= link "Edit Question", to: "#", phx_click: "show-edit-question-form", phx_value_id: question.id, class: "button" %></span>
+        <%= if @current_user.id == @game.user_id do %>
+          <span><%= link "Edit Question", to: "#", phx_click: "show-edit-question-form", phx_value_id: question.id, class: "button" %></span>
+        <% end %>
         <%= if @question_to_edit == question.id do %>
           <%= live_modal @socket, QuizzazWeb.QuestionLive.QuestionFormComponent,
                 id: question.id,
@@ -28,7 +34,9 @@
                 return_to: Routes.game_show_path(@socket, :show, @game)
           %>
       <% end %>
-        <span><%= link "Delete Question", to: "#", phx_click: "delete-question", phx_value_id: question.id, phx_value_game_id: @game.id, data: [confirm: "Are you sure?"], class: "button" %></span>
+        <%= if @current_user.id == @game.user_id do %>
+          <span><%= link "Delete Question", to: "#", phx_click: "delete-question", phx_value_id: question.id, phx_value_game_id: @game.id, data: [confirm: "Are you sure?"], class: "button" %></span>
+        <% end %>
       </li>
       <li>
         <strong>Correct Answer:</strong>
@@ -55,8 +63,9 @@
       <% end %>
     </ul>
   </li>
-
-  <button phx-click="show-new-question-form">New Question</button>
+  <%= if @current_user.id == @game.user_id do %>
+    <button phx-click="show-new-question-form">New Question</button>
+  <% end %>
   <%= if @show_new_question_form do %>
     <%= live_modal @socket, QuizzazWeb.QuestionLive.QuestionFormComponent,
       id: :new,

@@ -6,7 +6,6 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   @impl true
   def update(%{game: game} = assigns, socket) do
     changeset = Games.change_game(game)
-
     {:ok,
      socket
      |> assign(assigns)
@@ -41,7 +40,7 @@ defmodule QuizzazWeb.GameLive.FormComponent do
   end
 
   defp save_game(socket, :new, game_params) do
-    case Games.create_game(game_params) do
+    case Games.create_game(socket.assigns.current_user, game_params) do
       {:ok, game} ->
         {:noreply,
          socket

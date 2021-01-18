@@ -21,12 +21,18 @@
                <span><%= live_patch "New Game", to: Routes.game_index_path(@conn, :new)  %></span>
             </li>
             <li>
-              <span><%= live_patch "Browse Games", to: Routes.game_index_path(@conn, :index) %></span>
+              <span><%= live_patch "Browse All Games", to: Routes.game_index_path(@conn, :index) %></span>
             </li>
+            <%= if @current_user do %>
+              <li>
+                <span><%= live_patch "My Games", to: Routes.game_index_path(@conn, :mygames) %></span>
+              </li>
+            <% end %>
             <li>
               <span><%= live_patch "Home", to: Routes.page_path(@conn, :index) %></span>
             </li>
           </ul>
+          <%= render "_user_menu.html", assigns %>
         </nav>
       </section>
     </header>

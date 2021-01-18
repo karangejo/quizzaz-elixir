@@ -8,6 +8,7 @@ defmodule Quizzaz.Games do
 
   alias Quizzaz.Games.Game
   alias Quizzaz.Games.Question
+  alias Quizzaz.Accounts.User
 
   @doc """
   Returns the list of games.
@@ -20,6 +21,14 @@ defmodule Quizzaz.Games do
   """
   def list_games do
     Repo.all(Game)
+  end
+
+  def list_games(user) do
+    query = from g in Game,
+            where: g.user_id == ^user.id,
+            select: g
+
+    Repo.all(query)
   end
 
   @doc """
@@ -55,9 +64,10 @@ defmodule Quizzaz.Games do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_game(attrs \\ %{}) do
+  def create_game(%User{} = user, attrs \\ %{}) do
     %Game{}
     |> Game.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
   end
 

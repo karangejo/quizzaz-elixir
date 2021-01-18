@@ -1,6 +1,8 @@
 defmodule QuizzazWeb.Router do
   use QuizzazWeb, :router
 
+  import QuizzazWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule QuizzazWeb.Router do
     plug :put_root_layout, {QuizzazWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -20,11 +23,6 @@ defmodule QuizzazWeb.Router do
     live "/", PageLive, :index
 
     live "/games", GameLive.Index, :index
-    live "/games/new", GameLive.Index, :new
-    live "/games/:id/edit", GameLive.Index, :edit
-
-    live "/games/:id", GameLive.Show, :show
-    live "/games/:id/show/edit", GameLive.Show, :edit
 
   end
 
@@ -47,5 +45,45 @@ defmodule QuizzazWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: QuizzazWeb.Telemetry
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", QuizzazWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", QuizzazWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    live "/mygames", GameLive.Index, :mygames
+
+    live "/games/new", GameLive.Index, :new
+    live "/games/:id/edit", GameLive.Index, :edit
+
+    live "/games/:id", GameLive.Show, :show
+    live "/games/:id/show/edit", GameLive.Show, :edit
+  end
+
+  scope "/", QuizzazWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :confirm
   end
 end
