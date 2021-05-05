@@ -1,5 +1,4 @@
-<h1><%= @page_title %></h1>
-<span><%= live_redirect "Back", to: Routes.page_path(@socket, :index), class: "button" %></span>
+<h1 class="text-2xl font-bold"><%= @page_title %></h1>
 <%= if @live_action == :mygames do %>
   <span><%= live_patch "New Game", to: Routes.game_index_path(@socket, :new), class: "button"  %></span>
 <% end %>
@@ -17,7 +16,6 @@
 <table>
   <thead>
     <tr>
-      <th>Game</th>
       <th></th>
     </tr>
   </thead>

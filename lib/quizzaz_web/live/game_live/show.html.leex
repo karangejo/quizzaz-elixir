@@ -1,9 +1,6 @@
 <h1><%= @game.name %></h1>
 <%= if @current_user.id == @game.user_id do %>
-  <span><%= live_patch "Edit Game", to: Routes.game_show_path(@socket, :edit, @game), class: "button" %></span>
-  <span><%= live_redirect "Back", to: Routes.game_index_path(@socket, :mygames), class: "button" %></span>
-<% else %>
-  <span><%= live_redirect "Back", to: Routes.game_index_path(@socket, :index), class: "button" %></span>
+  <span><%= live_patch "Change Name", to: Routes.game_show_path(@socket, :edit, @game), class: "button" %></span>
 <% end %>
 
 <%= if @live_action in [:edit] do %>
